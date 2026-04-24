@@ -274,8 +274,6 @@ public class MoreActivity extends AppCompatActivity {
             } else if (checkedId == R.id.rb_cycling) {
                 mode = "cycling";
             }
-            Context context = getApplicationContext();
-            SharedPreferences sharedPref = context.getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("routeMode", mode);
             editor.apply();
@@ -284,8 +282,6 @@ public class MoreActivity extends AppCompatActivity {
         CheckBox switchLoop = findViewById(R.id.switch_loop);
         switchLoop.setChecked(sharedPref.getBoolean("routeLoop", false));
         switchLoop.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            Context context = getApplicationContext();
-            SharedPreferences sharedPref = context.getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putBoolean("routeLoop", isChecked);
             editor.apply();
