@@ -61,9 +61,8 @@ public class MoreActivity extends AppCompatActivity {
         etDMockLat.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-                Context context = getApplicationContext();
-                SharedPreferences sharedPref = context.getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
+                SharedPreferences prefs = getApplicationContext().getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
 
                 if (etDMockLat.getText().toString().isBlank()) {
                     putDouble(editor, "dLat", 0);
@@ -94,9 +93,8 @@ public class MoreActivity extends AppCompatActivity {
         etDMockLon.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-                Context context = getApplicationContext();
-                SharedPreferences sharedPref = context.getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
+                SharedPreferences prefs = getApplicationContext().getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
 
                 if (etDMockLon.getText().toString().isBlank()) {
                     putDouble(editor, "dLng", 0);
@@ -124,12 +122,11 @@ public class MoreActivity extends AppCompatActivity {
 
         EditText etMockCount = findViewById(R.id.et_MockCount);
         etMockCount.setText(String.format(Locale.ROOT, "%d", sharedPref.getInt("mockCount", 0)));
-        etMockCount.addTextChangedListener(new TextWatcher() {
+etMockCount.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-                Context context = getApplicationContext();
-                SharedPreferences sharedPref = context.getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
+                SharedPreferences prefs = getApplicationContext().getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
 
                 if (etMockCount.getText().toString().isBlank()) {
                     editor.putInt("mockCount", 0);
@@ -139,6 +136,41 @@ public class MoreActivity extends AppCompatActivity {
                     } catch (Throwable t) {
                         Log.e(MoreActivity.class.toString(), "Could not parse mockCount!", t);
                     }
+                }
+
+                editor.apply();
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+
+        EditText etMockFrequency = findViewById(R.id.et_MockFrequency);
+        etMockFrequency.setText(String.format(Locale.ROOT, "%d", sharedPref.getInt("mockFrequency", 10)));
+        etMockFrequency.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                SharedPreferences prefs = getApplicationContext().getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+
+                if (etMockFrequency.getText().toString().isBlank()) {
+                    editor.putInt("mockFrequency", 10);
+                } else {
+                    try {
+                        editor.putInt("mockFrequency", Integer.parseInt(etMockFrequency.getText().toString()));
+                    } catch (Throwable t) {
+                        Log.e(MoreActivity.class.toString(), "Could not parse mockFrequency!", t);
+                    }
+                }
+
+                editor.apply();
+            }
                 }
 
                 editor.apply();
@@ -160,9 +192,8 @@ public class MoreActivity extends AppCompatActivity {
         etMockFrequency.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-                Context context = getApplicationContext();
-                SharedPreferences sharedPref = context.getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
+                SharedPreferences prefs = getApplicationContext().getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
 
                 if (etMockFrequency.getText().toString().isBlank()) {
                     editor.putInt("mockFrequency", 10);
@@ -190,15 +221,13 @@ public class MoreActivity extends AppCompatActivity {
         CheckBox mockSpeed = findViewById(R.id.cb_MockSpeed);
         mockSpeed.setChecked(sharedPref.getBoolean("mockSpeed", true));
         mockSpeed.setOnCheckedChangeListener((compoundButton, b) -> {
-            Context context1 = getApplicationContext();
-            SharedPreferences sharedPref1 = context1.getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref1.edit();
+            SharedPreferences prefs = getApplicationContext().getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
 
             editor.putBoolean("mockSpeed", mockSpeed.isChecked());
 
             editor.apply();
         });
-
 
         EditText etMapProvider = findViewById(R.id.et_MapProvider);
         etMapProvider.setText(sharedPref.getString("mapProvider",
@@ -206,9 +235,8 @@ public class MoreActivity extends AppCompatActivity {
         etMapProvider.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-                Context context = getApplicationContext();
-                SharedPreferences sharedPref = context.getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
+                SharedPreferences prefs = getApplicationContext().getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
 
                 if (etMapProvider.getText().toString().isBlank()) {
                     editor.putString("mapProvider", MapProviderUtil.getDefaultMapProvider(Locale.getDefault()));
@@ -242,9 +270,8 @@ public class MoreActivity extends AppCompatActivity {
                     seekBar.setProgress(5);
                 }
                 tvSpeedValue.setText(progress + " km/h");
-                Context context = getApplicationContext();
-                SharedPreferences sharedPref = context.getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
+                SharedPreferences prefs = getApplicationContext().getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
                 editor.putInt("routeSpeed", progress);
                 editor.apply();
             }
@@ -274,9 +301,8 @@ public class MoreActivity extends AppCompatActivity {
             } else if (checkedId == R.id.rb_cycling) {
                 mode = "cycling";
             }
-            Context context = getApplicationContext();
-            SharedPreferences sharedPref = context.getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
+            SharedPreferences prefs = getApplicationContext().getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
             editor.putString("routeMode", mode);
             editor.apply();
         });
@@ -284,9 +310,8 @@ public class MoreActivity extends AppCompatActivity {
         CheckBox switchLoop = findViewById(R.id.switch_loop);
         switchLoop.setChecked(sharedPref.getBoolean("routeLoop", false));
         switchLoop.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            Context context = getApplicationContext();
-            SharedPreferences sharedPref = context.getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
+            SharedPreferences prefs = getApplicationContext().getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
             editor.putBoolean("routeLoop", isChecked);
             editor.apply();
         });
