@@ -31,4 +31,11 @@
     <string name="ActivityMore_MapProvider">Map Provider (e.g., \'OpenStreetMap\')</string>
     <string name="ActivityMore_MapProviderInfo">Requires restart - a list of possible values can be found here: https://leaflet-extras.github.io/leaflet-providers/preview/</string>
     <string name="ActivityMore_LeafletLicense"><![CDATA[Both <a href="https://github.com/Leaflet/Leaflet/blob/main/LICENSE">Leaflet</a> and <a href="https://github.com/leaflet-extras/leaflet-providers/blob/master/license.md">Leaflet-providers</a> are licensed under the BSD 2-Clause License.]]></string>
+
+    <string name="ActivityMore_RouteSpeed">Route Speed (km/h)</string>
+    <string name="ActivityMore_RouteMode">Transportation Mode</string>
+    <string name="ActivityMore_Driving">Driving</string>
+    <string name="ActivityMore_Walking">Walking</string>
+    <string name="ActivityMore_Cycling">Cycling</string>
+    <string name="ActivityMore_Loop">Loop route when complete</string>
 </resources>

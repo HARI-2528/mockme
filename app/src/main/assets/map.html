@@ -21,8 +21,8 @@
             flex-direction: column;
         }
         #search {
-            padding: 10px; /* Add some padding around the input */
-            box-sizing: border-box; /* Include padding in element's total width and height */
+            padding: 10px;
+            box-sizing: border-box;
         }
         #address_input {
             font-size: 16pt;
@@ -32,6 +32,51 @@
         #map {
             flex-grow: 1;
             width: 100%;
+        }
+        .mode-bar {
+            display: flex;
+            padding: 5px 10px;
+            background: #f0f0f0;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        .mode-bar button {
+            font-size: 14pt;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            background: white;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .mode-bar button.active {
+            background: #2196F3;
+            color: white;
+            border-color: #1976D2;
+        }
+        .route-bar {
+            display: flex;
+            padding: 5px 10px;
+            background: #e0e0e0;
+            gap: 5px;
+        }
+        .route-bar button {
+            font-size: 14pt;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            background: white;
+            cursor: pointer;
+            border-radius: 4px;
+            flex-grow: 1;
+        }
+        .route-bar button#btn_preview {
+            background: #4CAF50;
+            color: white;
+            border-color: #388E3C;
+        }
+        .route-bar button#btn_start {
+            background: #FF9800;
+            color: white;
+            border-color: #F57C00;
         }
         :root {
             --dark-mode-filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
@@ -44,6 +89,8 @@
                 filter:var(--dark-mode-filter, none);
             }
             #search,
+            .mode-bar,
+            .route-bar,
             .leaflet-container {
                 background: #000
             }
@@ -57,6 +104,16 @@
            placeholder="Search an address: Street, City"
            style="font-size:16pt;flex-grow:1;margin-right:5px">
     <button style="font-size:16pt;width:50px" onclick="searchForAddress()">🔍</button>
+</div>
+
+<div class="mode-bar">
+    <button id="btn_set_a" onclick="setMode('A')">📍 Set A</button>
+    <button id="btn_set_b" onclick="setMode('B')">📍 Set B</button>
+</div>
+
+<div class="route-bar">
+    <button id="btn_preview" onclick="previewRoute()">Preview Route</button>
+    <button id="btn_start" onclick="startJourney()">Start Journey</button>
 </div>
 
 <div id='map'></div>

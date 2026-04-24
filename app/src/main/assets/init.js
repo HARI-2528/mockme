@@ -94,3 +94,75 @@ map.on('zoomend', onZoomEnd);
 mapMarker = L.marker([lat, lng], {
   icon: icon
 }).addTo(map);
+
+var currentMode = 'A';
+var markerA = null;
+var markerB = null;
+var routePolyline = null;
+
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById('btn_set_a').classList.remove('active');
+  document.getElementById('btn_set_b').classList.remove('active');
+  if (mode === 'A') {
+    document.getElementById('btn_set_a').classList.add('active');
+  } else {
+    document.getElementById('btn_set_b').classList.add('active');
+  }
+}
+
+function onMapClickHandler(e) {
+  var clickedLat = e.latlng.lat;
+  var clickedLng = e.latlng.lng;
+
+  if (currentMode === 'A') {
+    if (markerA) map.removeLayer(markerA);
+    markerA = L.circleMarker([clickedLat, clickedLng], {
+      radius: 10,
+      color: 'green',
+      fillColor: '#2ecc71',
+      fillOpacity: 0.8
+    }).addTo(map);
+    markerA.bindPopup('Point A').openPopup();
+    Android.setPointA(clickedLat, clickedLng);
+  } else {
+    if (markerB) map.removeLayer(markerB);
+    markerB = L.circleMarker([clickedLat, clickedLng], {
+      radius: 10,
+      color: 'red',
+      fillColor: '#e74c3c',
+      fillOpacity: 0.8
+    }).addTo(map);
+    markerB.bindPopup('Point B').openPopup();
+    Android.setPointB(clickedLat, clickedLng);
+  }
+}
+
+map.on('contextmenu', onMapClickHandler);
+
+function previewRoute() {
+  Android.previewRoute();
+}
+
+function startJourney() {
+  Android.startJourney();
+}
+
+function drawPolyline(coords) {
+  if (routePolyline) {
+    map.removeLayer(routePolyline);
+  }
+  var latlngs = [];
+  for (var i = 0; i < coords.length; i++) {
+    latlngs.push([coords[i][0], coords[i][1]);
+  }
+  routePolyline = L.polyline(latlngs, {
+    color: '#3498db',
+    weight: 4,
+    opacity: 0.8
+  }).addTo(map);
+  map.fitBounds(routePolyline.getBounds());
+  alreadyRunning = true;
+}
+
+setMode('A');

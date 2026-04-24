@@ -42,15 +42,22 @@ import com.google.android.material.button.MaterialButton;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
 import java.util.Locale;
 
 
 public class MainActivity extends AppCompatActivity implements ServiceConnection {
 
     @NonNull
+    private static final String TAG = MainActivity.class.getSimpleName();
+
+    @NonNull
     public static final String sharedPrefKey = "cl.coders.faketraveler.sharedprefs";
     @NonNull
     public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.######", DecimalFormatSymbols.getInstance(Locale.ROOT));
+
+    @NonNull
+    private RouteManager routeManager = new RouteManager();
 
     private MaterialButton buttonApplyStop;
     private WebView webView;
@@ -77,6 +84,16 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     private boolean mockSpeed;
     private long endTime;
     private String mapProvider;
+
+    // Route config
+    private double[] pointA = null;
+    private double[] pointB = null;
+    private ArrayList<double[]> currentRoutePoints = null;
+    private double currentRouteDistance = 0;
+    private int routeSpeed = 50;
+    private String routeMode = "driving";
+    private boolean routeLoop = false;
+    private boolean pendingJourneyStart = false;
 
     @Override
     @SuppressLint("SetJavaScriptEnabled") // XSS unlikely an issue here...
@@ -229,6 +246,10 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         endTime = sharedPref.getLong("endTime", 0);
         mapProvider = sharedPref.getString("mapProvider", MapProviderUtil.getDefaultMapProvider(Locale.getDefault()));
 
+        routeSpeed = sharedPref.getInt("routeSpeed", 50);
+        routeMode = sharedPref.getString("routeMode", "driving");
+        routeLoop = sharedPref.getBoolean("routeLoop", false);
+
         if (version != currentVersion) {
             version = currentVersion;
             saveSettings();
@@ -249,6 +270,9 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         editor.putBoolean("mockSpeed", mockSpeed);
         editor.putLong("endTime", endTime);
         editor.putString("mapProvider", mapProvider);
+        editor.putInt("routeSpeed", routeSpeed);
+        editor.putString("routeMode", routeMode);
+        editor.putBoolean("routeLoop", routeLoop);
 
         editor.apply();
     }
@@ -370,6 +394,88 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         saveSettings();
     }
 
+    public void setPointA(double lat, double lon) {
+        this.pointA = new double[]{lat, lon};
+        Log.d(TAG, "Point A set: " + lat + ", " + lon);
+    }
+
+    public void setPointB(double lat, double lon) {
+        this.pointB = new double[]{lat, lon};
+        Log.d(TAG, "Point B set: " + lat + ", " + lon);
+    }
+
+    public void previewRoute() {
+        if (pointA == null || pointB == null) {
+            toast("Please set both points first");
+            return;
+        }
+
+        toast("Fetching route...");
+
+        routeManager.fetchRoute(pointA[0], pointA[1], pointB[0], pointB[1], routeMode, new RouteManager.RouteCallback() {
+            @Override
+            public void onSuccess(ArrayList<double[]> points, double totalMeters) {
+                currentRoutePoints = points;
+                currentRouteDistance = totalMeters;
+
+                StringBuilder coordsJson = new StringBuilder("[");
+                for (int i = 0; i < points.size(); i++) {
+                    double[] p = points.get(i);
+                    coordsJson.append("[").append(p[0]).append(",").append(p[1]).append("]");
+                    if (i < points.size() - 1) {
+                        coordsJson.append(",");
+                    }
+                }
+                coordsJson.append("]");
+
+                final String json = coordsJson.toString();
+                webView.post(() -> {
+                    webView.evaluateJavascript("drawPolyline(" + json + ")", null);
+                });
+
+                double distKm = totalMeters / 1000.0;
+                toast("Route fetched: " + String.format(Locale.ROOT, "%.1f", distKm) + " km");
+            }
+
+            @Override
+            public void onFailure(String error) {
+                toast("Route error: " + error);
+            }
+        });
+    }
+
+    public void startJourney() {
+        if (pointA == null || pointB == null) {
+            toast("Please set both points first");
+            return;
+        }
+
+        if (currentRoutePoints == null || currentRoutePoints.isEmpty()) {
+            toast("Please preview route first");
+            return;
+        }
+
+        if (binder == null) {
+            pendingJourneyStart = true;
+            Intent intent = new Intent(this, MockedLocationService.class);
+            bindService(intent, this, BIND_AUTO_CREATE);
+        } else {
+            startJourneyOnService();
+        }
+    }
+
+    private void startJourneyOnService() {
+        if (binder != null) {
+            String destName = "Point B";
+            if (pointB != null) {
+                destName = String.format(Locale.ROOT, "%.4f, %.4f", pointB[0], pointB[1]);
+            }
+            binder.startRoute(currentRoutePoints, currentRouteDistance, routeSpeed, routeLoop, destName);
+            endTime = System.currentTimeMillis() + (long) (currentRouteDistance / (routeSpeed / 3.6) * 1000);
+            saveSettings();
+        }
+    }
+
     /**
      * Sets latitude and longitude
      *
@@ -399,6 +505,11 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         binder = (MockedLocationService.MockedBinder) service;
         binder.mockState.observe(this, this::onMockedStateChange);
         binder.mockedLocation.observe(this, this::onMockedLocationChange);
+
+        if (pendingJourneyStart) {
+            pendingJourneyStart = false;
+            startJourneyOnService();
+        }
     }
 
     @Override

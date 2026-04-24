@@ -15,7 +15,10 @@ import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RadioGroup;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -224,6 +227,68 @@ public class MoreActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
+        });
+
+        SeekBar seekbarSpeed = findViewById(R.id.seekbar_speed);
+        TextView tvSpeedValue = findViewById(R.id.tv_speed_value);
+        int savedSpeed = sharedPref.getInt("routeSpeed", 50);
+        seekbarSpeed.setProgress(savedSpeed);
+        tvSpeedValue.setText(savedSpeed + " km/h");
+        seekbarSpeed.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (progress < 5) {
+                    progress = 5;
+                    seekBar.setProgress(5);
+                }
+                tvSpeedValue.setText(progress + " km/h");
+                Context context = getApplicationContext();
+                SharedPreferences sharedPref = context.getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putInt("routeSpeed", progress);
+                editor.apply();
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+        RadioGroup rgMode = findViewById(R.id.rg_mode);
+        String savedMode = sharedPref.getString("routeMode", "driving");
+        if ("walking".equals(savedMode)) {
+            rgMode.check(R.id.rb_walking);
+        } else if ("cycling".equals(savedMode)) {
+            rgMode.check(R.id.rb_cycling);
+        } else {
+            rgMode.check(R.id.rb_driving);
+        }
+        rgMode.setOnCheckedChangeListener((group, checkedId) -> {
+            String mode = "driving";
+            if (checkedId == R.id.rb_walking) {
+                mode = "walking";
+            } else if (checkedId == R.id.rb_cycling) {
+                mode = "cycling";
+            }
+            Context context = getApplicationContext();
+            SharedPreferences sharedPref = context.getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString("routeMode", mode);
+            editor.apply();
+        });
+
+        CheckBox switchLoop = findViewById(R.id.switch_loop);
+        switchLoop.setChecked(sharedPref.getBoolean("routeLoop", false));
+        switchLoop.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Context context = getApplicationContext();
+            SharedPreferences sharedPref = context.getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean("routeLoop", isChecked);
+            editor.apply();
         });
     }
 

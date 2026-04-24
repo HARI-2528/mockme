@@ -123,6 +123,80 @@
                     android:text="@string/ActivityMore_Speed" />
 
                 <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_RouteSpeed"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:paddingTop="25dp"
+                    android:text="@string/ActivityMore_RouteSpeed"
+                    android:textSize="18sp" />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatSeekBar
+                        android:id="@+id/seekbar_speed"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:max="120"
+                        android:min="5"
+                        android:progress="50" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_speed_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minWidth="60dp"
+                        android:text="50 km/h"
+                        android:textSize="14sp" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_RouteMode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:paddingTop="15dp"
+                    android:text="@string/ActivityMore_RouteMode"
+                    android:textSize="18sp" />
+
+                <androidx.appcompat.widget.RadioGroup
+                    android:id="@+id/rg_mode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatRadioButton
+                        android:id="@+id/rb_driving"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/ActivityMore_Driving" />
+
+                    <androidx.appcompat.widget.AppCompatRadioButton
+                        android:id="@+id/rb_walking"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/ActivityMore_Walking" />
+
+                    <androidx.appcompat.widget.AppCompatRadioButton
+                        android:id="@+id/rb_cycling"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/ActivityMore_Cycling" />
+                </androidx.appcompat.widget.RadioGroup>
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/switch_loop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:text="@string/ActivityMore_Loop" />
+
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_MapProvider"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

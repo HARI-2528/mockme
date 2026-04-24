@@ -17,11 +17,6 @@ public class WebAppInterface {
         mainActivity = mA;
     }
 
-    /**
-     * Set position in GUI. This method is called by javascript when there is a long press in the map.
-     *
-     * @param str String containing lat and lng
-     */
     @JavascriptInterface
     public void setPosition(final String str) {
         mainActivity.runOnUiThread(() -> {
@@ -44,6 +39,42 @@ public class WebAppInterface {
             } catch (Throwable t) {
                 Log.e(WebAppInterface.class.toString(), "Could not save zoom!", t);
             }
+        });
+    }
+
+    @JavascriptInterface
+    public void setPointA(final String lat, final String lon) {
+        mainActivity.runOnUiThread(() -> {
+            try {
+                mainActivity.setPointA(Double.parseDouble(lat), Double.parseDouble(lon));
+            } catch (Throwable t) {
+                Log.e(WebAppInterface.class.toString(), "Could not set point A!", t);
+            }
+        });
+    }
+
+    @JavascriptInterface
+    public void setPointB(final String lat, final String lon) {
+        mainActivity.runOnUiThread(() -> {
+            try {
+                mainActivity.setPointB(Double.parseDouble(lat), Double.parseDouble(lon));
+            } catch (Throwable t) {
+                Log.e(WebAppInterface.class.toString(), "Could not set point B!", t);
+            }
+        });
+    }
+
+    @JavascriptInterface
+    public void previewRoute() {
+        mainActivity.runOnUiThread(() -> {
+            mainActivity.previewRoute();
+        });
+    }
+
+    @JavascriptInterface
+    public void startJourney() {
+        mainActivity.runOnUiThread(() -> {
+            mainActivity.startJourney();
         });
     }
 
