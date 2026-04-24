@@ -16,6 +16,7 @@ import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresPermission;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
@@ -129,13 +130,18 @@ public class MockedLocationService extends Service {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
                             == android.content.pm.PackageManager.PERMISSION_GRANTED) {
-                        manager.notify(NOTIFICATION_ID, builder.build());
+                        notifyWithPermissionCheck(manager, builder);
                     }
                 } else {
                     manager.notify(NOTIFICATION_ID, builder.build());
                 }
             }
         }
+    }
+
+    @RequiresPermission(android.Manifest.permission.POST_NOTIFICATIONS)
+    private void notifyWithPermissionCheck(NotificationManager manager, NotificationCompat.Builder builder) {
+        manager.notify(NOTIFICATION_ID, builder.build());
     }
 
     protected void startRoute(ArrayList<double[]> points, double totalMeters, float speedKmh, boolean loop, String destName) {
