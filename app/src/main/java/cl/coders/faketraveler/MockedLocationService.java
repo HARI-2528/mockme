@@ -17,6 +17,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -125,7 +126,14 @@ public class MockedLocationService extends Service {
                         .setOngoing(true)
                         .setProgress(100, progress, false);
 
-                manager.notify(NOTIFICATION_ID, builder.build());
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
+                            == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                        manager.notify(NOTIFICATION_ID, builder.build());
+                    }
+                } else {
+                    manager.notify(NOTIFICATION_ID, builder.build());
+                }
             }
         }
     }
