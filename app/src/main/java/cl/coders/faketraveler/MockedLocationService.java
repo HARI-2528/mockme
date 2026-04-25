@@ -111,6 +111,7 @@ public class MockedLocationService extends Service {
         startForeground(NOTIFICATION_ID, builder.build());
     }
 
+    @RequiresPermission(android.Manifest.permission.POST_NOTIFICATIONS)
     private void updateNotification(int progress) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             NotificationManager manager = getSystemService(NotificationManager.class);
