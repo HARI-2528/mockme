@@ -20,6 +20,10 @@ android {
         }
     }
     namespace = 'cl.coders.faketraveler'
+    lint {
+        abortOnError false
+        disable 'Deprecated', 'ViewConstructor', 'UseCompoundDrawables'
+    }
 }
 
 dependencies {

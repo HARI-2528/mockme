@@ -51,7 +51,8 @@
 
         <service
             android:name=".MockedLocationService"
-            android:enabled="true" />
+            android:enabled="true"
+            android:foregroundServiceType="location" />
 
     </application>
 
