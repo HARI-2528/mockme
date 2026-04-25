@@ -15,7 +15,6 @@ import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
@@ -44,8 +43,7 @@ public class MoreActivity extends AppCompatActivity {
             return WindowInsetsCompat.CONSUMED;
         });
 
-        Context context = getApplicationContext();
-        SharedPreferences sharedPref = context.getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
 
         TextView tvLeafletLicense = findViewById(R.id.tv_LeafletLicense);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -78,13 +76,11 @@ public class MoreActivity extends AppCompatActivity {
             }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start,
-                                          int count, int after) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start,
-                                      int before, int count) {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
         });
 
@@ -110,19 +106,17 @@ public class MoreActivity extends AppCompatActivity {
             }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start,
-                                          int count, int after) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start,
-                                      int before, int count) {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
         });
 
         EditText etMockCount = findViewById(R.id.et_MockCount);
         etMockCount.setText(String.format(Locale.ROOT, "%d", sharedPref.getInt("mockCount", 0)));
-etMockCount.addTextChangedListener(new TextWatcher() {
+        etMockCount.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
                 SharedPreferences prefs = getApplicationContext().getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
@@ -142,8 +136,7 @@ etMockCount.addTextChangedListener(new TextWatcher() {
             }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start,
-                                          int count, int after) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
@@ -171,46 +164,9 @@ etMockCount.addTextChangedListener(new TextWatcher() {
 
                 editor.apply();
             }
-                }
-
-                editor.apply();
-            }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start,
-                                          int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start,
-                                      int before, int count) {
-            }
-        });
-
-        EditText etMockFrequency = findViewById(R.id.et_MockFrequency);
-        etMockFrequency.setText(String.format(Locale.ROOT, "%d", sharedPref.getInt("mockFrequency", 10)));
-        etMockFrequency.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                SharedPreferences prefs = getApplicationContext().getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = prefs.edit();
-
-                if (etMockFrequency.getText().toString().isBlank()) {
-                    editor.putInt("mockFrequency", 10);
-                } else {
-                    try {
-                        editor.putInt("mockFrequency", Integer.parseInt(etMockFrequency.getText().toString()));
-                    } catch (Throwable t) {
-                        Log.e(MoreActivity.class.toString(), "Could not parse mockFrequency!", t);
-                    }
-                }
-
-                editor.apply();
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start,
-                                          int count, int after) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
@@ -223,9 +179,7 @@ etMockCount.addTextChangedListener(new TextWatcher() {
         mockSpeed.setOnCheckedChangeListener((compoundButton, b) -> {
             SharedPreferences prefs = getApplicationContext().getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = prefs.edit();
-
             editor.putBoolean("mockSpeed", mockSpeed.isChecked());
-
             editor.apply();
         });
 
@@ -248,8 +202,7 @@ etMockCount.addTextChangedListener(new TextWatcher() {
             }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start,
-                                          int count, int after) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
