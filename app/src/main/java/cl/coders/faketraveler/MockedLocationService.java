@@ -267,7 +267,13 @@ public class MockedLocationService extends Service {
             int progress = (int) ((coveredMeters / totalMeters) * 100);
             if (progress > 100) progress = 100;
             currentProgress = progress;
-            updateNotification(progress);
+            
+            // Only call updateNotification if we have POST_NOTIFICATIONS permission or on pre-TIRAMISU
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+                    ContextCompat.checkSelfPermission(MockedLocationService.this, android.Manifest.permission.POST_NOTIFICATIONS)
+                            == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                updateNotification(progress);
+            }
         }
     }
 
